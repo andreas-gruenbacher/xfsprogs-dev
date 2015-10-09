@@ -185,6 +185,8 @@ char	*mopts[] = {
 	"finobt",
 #define M_UUID		2
 	"uuid",
+#define M_RICHACL	3
+	"richacl",
 	NULL
 };
 
@@ -983,6 +985,7 @@ main(
 	int			crcs_enabled;
 	int			finobt;
 	bool			finobtflag;
+	int			richacls_enabled;
 	int			spinodes;
 
 	platform_uuid_generate(&uuid);
@@ -1021,6 +1024,7 @@ main(
 	crcs_enabled = 1;
 	finobt = 1;
 	finobtflag = false;
+	richacls_enabled = 0;
 	spinodes = 0;
 	memset(&fsx, 0, sizeof(fsx));
 
@@ -1531,6 +1535,14 @@ main(
 						reqval('m', mopts, M_UUID);
 					if (platform_uuid_parse(value, &uuid))
 						illegal(optarg, "m uuid");
+					break;
+				case M_RICHACL:
+					if (!value || *value == '\0')
+						reqval('m', mopts, M_RICHACL);
+					c = atoi(value);
+					if (c < 0 || c > 1)
+						illegal(value, "m richacl");
+					richacls_enabled = c;
 					break;
 				default:
 					unknown('m', value);
@@ -2562,11 +2574,15 @@ _("size %s specified for log subvolume is too large, maximum is %lld blocks\n"),
 		dirftype = 1;
 	}
 
+	if (richacls_enabled) {
+		sbp->sb_features_incompat |= XFS_SB_FEAT_INCOMPAT_RICHACL;
+	}
+
 	if (!qflag || Nflag) {
 		printf(_(
 		   "meta-data=%-22s isize=%-6d agcount=%lld, agsize=%lld blks\n"
 		   "         =%-22s sectsz=%-5u attr=%u, projid32bit=%u\n"
-		   "         =%-22s crc=%-8u finobt=%u, sparse=%u\n"
+		   "         =%-22s crc=%-8u finobt=%u, richacl=%d, sparse=%u\n"
 		   "data     =%-22s bsize=%-6u blocks=%llu, imaxpct=%u\n"
 		   "         =%-22s sunit=%-6u swidth=%u blks\n"
 		   "naming   =version %-14u bsize=%-6u ascii-ci=%d ftype=%d\n"
@@ -2575,7 +2591,7 @@ _("size %s specified for log subvolume is too large, maximum is %lld blocks\n"),
 		   "realtime =%-22s extsz=%-6d blocks=%lld, rtextents=%lld\n"),
 			dfile, isize, (long long)agcount, (long long)agsize,
 			"", sectorsize, attrversion, !projid16bit,
-			"", crcs_enabled, finobt, spinodes,
+			"", crcs_enabled, finobt, richacls_enabled, spinodes,
 			"", blocksize, (long long)dblocks, imaxpct,
 			"", dsunit, dswidth,
 			dirversion, dirblocksize, nci, dirftype,

@@ -173,6 +173,15 @@ is used, the free inode btree feature is not supported and is disabled.
 .BI uuid= value
 Use the given value as the filesystem UUID for the newly created filesystem.
 The default is to generate a random UUID.
+.BI richacl= value
+This option is used to create a filesystem with support for Rich Access Control
+Lists (richacls). The value is either 0 to disable the feature, or 1 to enable
+richacls. Filesystems with richacl support require richacl support in the
+kernel to be mounted.
+.IP
+By default,
+.B mkfs.xfs
+will disable richacls.
 .RE
 .TP
 .BI \-d " data_section_options"
