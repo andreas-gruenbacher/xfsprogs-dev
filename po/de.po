@@ -13543,21 +13543,9 @@ msgstr ""
 msgid "done\n"
 msgstr "erledigt\n"
 
-#: .././repair/attr_repair.c:106
-msgid ""
-"entry contains illegal value in attribute named SGI_ACL_FILE or "
-"SGI_ACL_DEFAULT\n"
-msgstr ""
-"Eintrag enthält unerlaubten Wert im Attribut mit Namen SGI_ACL_FILE\n"
-"oder SGI_ACL_DEFAULT\n"
-
-#: .././repair/attr_repair.c:128
-msgid "entry contains illegal value in attribute named SGI_MAC_LABEL\n"
-msgstr "Eintrag enthält unerlaubten Wert im Attribut mit Namen SGI_MAC_LABEL\n"
-
-#: .././repair/attr_repair.c:134
-msgid "entry contains illegal value in attribute named SGI_CAP_FILE\n"
-msgstr "Eintrag enthält unerlaubten Wert im Attribut mit Namen SGI_CAP_FILE\n"
+#: .././repair/attr_repair.c:200
+msgid "entry contains illegal value in attribute named %.*s\n"
+msgstr "Eintrag enthält unerlaubten Wert im Attribut mit Namen %.*s\n"
 
 #: .././repair/attr_repair.c:173
 #, c-format

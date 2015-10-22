@@ -9078,17 +9078,9 @@ msgstr ""
 msgid "No memory for ACL check!\n"
 msgstr "Brak pamięci na sprawdzenie ACL!\n"
 
-#: .././repair/attr_repair.c:763
-msgid "entry contains illegal value in attribute named SGI_ACL_FILE or SGI_ACL_DEFAULT\n"
-msgstr "wpis zawiera niedozwoloną wartość w atrybucie SGI_ACL_FILE lub SGI_ACL_DEFAULT\n"
-
-#: .././repair/attr_repair.c:789
-msgid "entry contains illegal value in attribute named SGI_MAC_LABEL\n"
-msgstr "wpis zawiera niedozwoloną wartość w atrybucie SGI_MAC_LABEL\n"
-
-#: .././repair/attr_repair.c:795
-msgid "entry contains illegal value in attribute named SGI_CAP_FILE\n"
-msgstr "wpis zawiera niedozwoloną wartość w atrybucie SGI_CAP_FILE\n"
+#: .././repair/attr_repair.c:200
+msgid "entry contains illegal value in attribute named %.*s\n"
+msgstr "wpis zawiera niedozwoloną wartość w atrybucie %.*s\n"
 
 #: .././repair/attr_repair.c:835
 #, c-format

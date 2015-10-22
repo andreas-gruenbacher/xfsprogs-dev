@@ -166,12 +166,8 @@ valuecheck(
 		} else
 			valuep = value;
 
-		if (xfs_acl_valid(mp, valuep) != 0) {
+		if (xfs_acl_valid(mp, valuep) != 0)
 			clearit = 1;
-			do_warn(
-	_("entry contains illegal value in attribute named SGI_ACL_FILE "
-	  "or SGI_ACL_DEFAULT\n"));
-		}
 
 		if (valuep != value)
 			free(valuep);
@@ -194,17 +190,15 @@ valuecheck(
 			 * else clearit = 1;
 			 */
 			clearit = 1;
-			do_warn(
-	_("entry contains illegal value in attribute named SGI_MAC_LABEL\n"));
 		}
 	} else if (strncmp(namevalue, SGI_CAP_FILE, SGI_CAP_FILE_SIZE) == 0) {
-		if ( valuelen != sizeof(xfs_cap_set_t)) {
+		if ( valuelen != sizeof(xfs_cap_set_t))
 			clearit = 1;
-			do_warn(
-	_("entry contains illegal value in attribute named SGI_CAP_FILE\n"));
-		}
 	}
 
+	if (clearit)
+		do_warn(_("entry contains illegal value in attribute named %.*s\n"),
+			namelen, namevalue);
 	return(clearit);
 }
 
