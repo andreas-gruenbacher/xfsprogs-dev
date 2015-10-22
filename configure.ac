@@ -101,6 +101,28 @@ AC_PACKAGE_GLOBALS(xfsprogs)
 AC_PACKAGE_UTILITIES(xfsprogs)
 AC_MULTILIB($enable_lib64)
 
+have_richacl=no
+librichacl=
+AC_CHECK_HEADERS([sys/richacl.h])
+if test "$ac_cv_header_sys_richacl_h" = yes; then
+    AC_CHECK_HEADERS([linux/xattr.h])
+    saved_LIBS=$LIBS
+    librichacl=-l:librichacl.a
+    LIBS="$LIBS $librichacl"
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([
+	#include <sys/richacl.h>
+    ],[
+	int valid = richacl_valid((struct richacl *)0);
+    ])], [
+	have_richacl=yes
+    ], [
+	librichacl=
+    ])
+    LIBS=$saved_LIBS
+fi
+AC_SUBST([have_richacl])
+AC_SUBST([librichacl])
+
 AC_PACKAGE_NEED_AIO_H
 AC_PACKAGE_NEED_LIO_LISTIO
 

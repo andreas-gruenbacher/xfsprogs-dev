@@ -26,6 +26,17 @@
 #include "dir2.h"
 #include "da_util.h"
 
+#ifdef HAVE_RICHACL
+# if HAVE_LINUX_XATTR_H
+#  include <linux/xattr.h>
+# endif
+# ifndef XATTR_RICHACL
+#  define XATTR_RICHACL "richacl"
+# endif
+
+# include <sys/richacl.h>
+#endif
+
 static int xfs_acl_valid(struct xfs_mount *mp, struct xfs_acl *daclp);
 static int xfs_mac_valid(xfs_mac_label_t *lp);
 
@@ -195,13 +206,41 @@ valuecheck(
 		if ( valuelen != sizeof(xfs_cap_set_t))
 			clearit = 1;
 	}
+#if HAVE_RICHACL
+	else if (namelen == strlen(XATTR_RICHACL) &&
+		 strncmp(namevalue, XATTR_RICHACL, strlen(XATTR_RICHACL)) == 0) {
+		struct richacl *acl;
+
+		if (value == NULL) {
+			valuep = malloc(valuelen);
+			if (!valuep)
+				do_error(_("No memory for ACL check!\n"));
+			memcpy(valuep, namevalue + namelen, valuelen);
+		} else
+			valuep = value;
+
+		acl = richacl_from_xattr(valuep, valuelen);
+		if (!acl) {
+			if (errno == ENOMEM)
+				do_error(_("No memory for ACL check!\n"));
+			else
+				clearit = 1;
+		} else {
+			if (richacl_valid(acl) != 0)
+				clearit = 1;
+			richacl_free(acl);
+		}
+
+		if (valuep != value)
+			free(valuep);
+	}
+#endif
 
 	if (clearit)
 		do_warn(_("entry contains illegal value in attribute named %.*s\n"),
 			namelen, namevalue);
 	return(clearit);
 }
-
 
 /*
  * this routine validates the attributes in shortform format.
