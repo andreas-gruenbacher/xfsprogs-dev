@@ -160,6 +160,8 @@ valuecheck(
 	int		namelen,
 	int		valuelen)
 {
+	const bool feature_richacl = xfs_sb_has_incompat_feature(&mp->m_sb,
+		XFS_SB_FEAT_INCOMPAT_RICHACL);
 	/* for proper alignment issues, get the structs and memmove the values */
 	xfs_mac_label_t macl;
 	void *valuep;
@@ -169,6 +171,13 @@ valuecheck(
 	     strncmp(namevalue, SGI_ACL_FILE, SGI_ACL_FILE_SIZE) == 0) ||
 	    (namelen == SGI_ACL_DEFAULT_SIZE &&
 	     strncmp(namevalue, SGI_ACL_DEFAULT, SGI_ACL_DEFAULT_SIZE) == 0)) {
+		if (feature_richacl) {
+			do_warn(_("filesystem feature %s set "
+				  "but attribute %.*s exists\n"),
+				"richacl", namelen, namevalue);
+			return 1;
+		}
+
 		if (value == NULL) {
 			valuep = malloc(valuelen);
 			if (!valuep)
@@ -210,6 +219,13 @@ valuecheck(
 	else if (namelen == strlen(XATTR_RICHACL) &&
 		 strncmp(namevalue, XATTR_RICHACL, strlen(XATTR_RICHACL)) == 0) {
 		struct richacl *acl;
+
+		if (!feature_richacl) {
+			do_warn(_("filesystem feature %s not set "
+				  "but attribute %.*s exists\n"),
+				"richacl", namelen, namevalue);
+			return 1;
+		}
 
 		if (value == NULL) {
 			valuep = malloc(valuelen);
