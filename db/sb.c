@@ -690,6 +690,8 @@ version_string(
 		strcat(s, ",FTYPE");
 	if (xfs_sb_version_hasfinobt(sbp))
 		strcat(s, ",FINOBT");
+	if (xfs_sb_has_incompat_feature(sbp, XFS_SB_FEAT_INCOMPAT_RICHACL))
+		strcat(s, ",RICHACL");
 	if (xfs_sb_version_hassparseinodes(sbp))
 		strcat(s, ",SPARSE_INODES");
 	if (xfs_sb_version_hasmetauuid(sbp))
